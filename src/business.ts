@@ -36,10 +36,11 @@ export function injectBusinessResultParser(eaConfig: EAConfig, axios?: Axios) {
         )
         return Promise.reject(axiosError)
       } else {
-        if ((eaConfig._feedback || config._feedback) && !config._silent) {
-          const finalMsg = parseFeedback(message, config._feedback)
+        const feedback = config._feedback || eaConfig._feedback
+        if (feedback && !config._silent) {
+          const finalMsg = parseFeedback(message, feedback)
           if (typeof finalMsg === 'string' && eaConfig.success) {
-            eaConfig.success(message)
+            eaConfig.success(finalMsg)
           }
         }
         // 返回真正的业务数据
