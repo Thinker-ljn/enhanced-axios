@@ -1,4 +1,4 @@
-import { Axios } from 'axios'
+import { Axios, AxiosInstance } from 'axios'
 import { injectAliasInterceptor } from './alias'
 import { injectAuthorizationCheck } from './authorization'
 import { injectBusinessResultParser } from './business'
@@ -7,7 +7,7 @@ import { EAConfig } from './type'
 import { getKeys } from './utils/keyof'
 import { noneReject, noneResolve } from './utils/none-func'
 
-const enhancedAxios = (axios: Axios, config: EAConfig) => {
+const enhancedAxios = (axios: Axios | AxiosInstance, config: EAConfig) => {
   injectAliasInterceptor(config, axios)
   injectAuthorizationCheck(config, axios)
   injectBusinessResultParser(config, axios)

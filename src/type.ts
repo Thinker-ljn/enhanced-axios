@@ -32,7 +32,7 @@ export interface EAConfig {
   validBusinessCodes: BusinessCodes
   /**拦截器 */
   interceptors?: EAExtraInterceptors
-  /**业务数据与业务代码的别名 */
+  /**业务数据与业务代码的别名, 默认是 code message data */
   businessAlias?: EAAlias
   /**用户未认证的业务代码 */
   unanthorizedBusinessCodes?: BusinessCodes
