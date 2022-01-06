@@ -1,5 +1,5 @@
 // fork from axios
-import { EAxiosError, EAxiosRequestConfig } from '@/type'
+import { EAxiosBusinessResult, EAxiosError, EAxiosRequestConfig } from '@/type'
 import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 
 /**
@@ -49,6 +49,7 @@ function enhanceError(
         this.response && this.response.status ? this.response.status : null,
     }
   }
+  addFormatMessage(error)
   return error
 }
 
@@ -71,4 +72,17 @@ export function createError(
 ): EAxiosError {
   const error = new Error(message)
   return enhanceError(error, config, code, request, response)
+}
+
+export function addFormatMessage(error: EAxiosError) {
+  error._formatMessage = () => {
+    if (!error.response) return ''
+    const { status, statusText } = error.response
+    const aliasData = error.response._business || ({} as EAxiosBusinessResult)
+    const defaultMsg = `[${aliasData.code || status}]: ${
+      aliasData.message || statusText || error.message || '网络异常~请稍候再试'
+    }`
+
+    return defaultMsg
+  }
 }

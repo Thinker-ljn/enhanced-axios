@@ -6,6 +6,7 @@ import {
   EAxiosResponse,
 } from '@/type'
 import { Axios } from 'axios'
+import { addFormatMessage } from './utils/axios-error'
 
 export const defaultAlias = {
   code: 'code',
@@ -42,16 +43,7 @@ export const injectAliasInterceptor = (eaConfig: EAConfig, axios?: Axios) => {
 
   const reject = (error: EAxiosError) => {
     error.response = resolve(error.response)
-    error._formatMessage = () => {
-      if (!error.response) return ''
-      const { status, statusText } = error.response
-      const aliasData = error.response._business || ({} as EAxiosBusinessResult)
-      const defaultMsg = `[${aliasData.code || status}]: ${
-        aliasData.message || statusText || '网络异常~请稍候再试'
-      }`
-
-      return defaultMsg
-    }
+    addFormatMessage(error)
     return Promise.reject(error)
   }
 
