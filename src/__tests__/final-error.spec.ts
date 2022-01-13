@@ -4,6 +4,9 @@ import { createError } from '@/utils/axios-error'
 describe('final error interceptors', () => {
   const warning = jest.fn()
 
+  beforeEach(() => {
+    warning.mockClear()
+  })
   const { reject } = injectFinalErrorHandler({
     validBusinessCodes: [],
     warning,
@@ -22,7 +25,7 @@ describe('final error interceptors', () => {
   it('should warning timeout', (done) => {
     const err = createError('timeout', {}, 'ECONNABORTED')
     reject(err).catch(() => {
-      expect(warning).toHaveBeenLastCalledWith('请求超时，请稍后再试。')
+      expect(warning).toHaveBeenCalledWith('请求超时，请稍后再试。')
       done()
     })
   })
@@ -31,7 +34,7 @@ describe('final error interceptors', () => {
     const err = createError('timeout', {})
     err._formatMessage = () => '_formatMessage'
     reject(err).catch(() => {
-      expect(warning).toHaveBeenLastCalledWith('_formatMessage')
+      expect(warning).toHaveBeenCalledWith('_formatMessage')
       done()
     })
   })
@@ -40,7 +43,7 @@ describe('final error interceptors', () => {
     const err = createError('timeout', { _silent: true })
     err._formatMessage = () => '_formatMessage2'
     reject(err).catch(() => {
-      expect(warning).toHaveBeenLastCalledWith('_formatMessage')
+      expect(warning).toHaveBeenCalledTimes(0)
       done()
     })
   })
