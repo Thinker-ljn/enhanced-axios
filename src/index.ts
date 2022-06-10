@@ -8,6 +8,7 @@ import type {
   EAxiosError,
   EAxiosRequestConfig,
   EAxiosResponse,
+  EAxiosInstance,
 } from './type'
 
 export { enhancedAxios, genIfUnauthorizedInterceptor }
@@ -20,4 +21,5 @@ export {
   EAxiosResponse,
   EAxiosBusinessResult,
   EAxiosRequestConfig,
+  EAxiosInstance,
 }

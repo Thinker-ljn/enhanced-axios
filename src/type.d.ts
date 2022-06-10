@@ -43,7 +43,7 @@ export interface EAConfig {
   _feedback?: boolean | string | [string]
 }
 
-export interface EAxiosRequestConfig extends AxiosRequestConfig {
+export interface EAxiosRequestConfig<D = any> extends AxiosRequestConfig<D> {
   /**
    * 是否在成功时弹出接口返回的 message （可传字符串，覆盖接口返回的信息），需要注册 success 函数
    * 可传入一个字符串元组，表示可选，如果接口无返回则使用，如：{ _feedback: ['这是备用的成功信息'] }
@@ -71,4 +71,53 @@ export type EAxiosError = AxiosError & {
   response?: EAxiosResponse
   /**可输出由原响应错误转换的默认报错信息 */
   _formatMessage?: () => string
+}
+
+export class EAxios {
+  constructor(config?: EAxiosRequestConfig)
+  defaults: AxiosDefaults
+  interceptors: {
+    request: AxiosInterceptorManager<EAxiosRequestConfig>
+    response: AxiosInterceptorManager<AxiosResponse>
+  }
+  getUri(config?: EAxiosRequestConfig): string
+  request<T = any, R = AxiosResponse<T>, D = any>(
+    config: EAxiosRequestConfig<D>
+  ): Promise<R>
+  get<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    config?: EAxiosRequestConfig<D>
+  ): Promise<R>
+  delete<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    config?: EAxiosRequestConfig<D>
+  ): Promise<R>
+  head<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    config?: EAxiosRequestConfig<D>
+  ): Promise<R>
+  options<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    config?: EAxiosRequestConfig<D>
+  ): Promise<R>
+  post<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    data?: D,
+    config?: EAxiosRequestConfig<D>
+  ): Promise<R>
+  put<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    data?: D,
+    config?: EAxiosRequestConfig<D>
+  ): Promise<R>
+  patch<T = any, R = AxiosResponse<T>, D = any>(
+    url: string,
+    data?: D,
+    config?: EAxiosRequestConfig<D>
+  ): Promise<R>
+}
+
+export interface EAxiosInstance extends EAxios {
+  <T = any>(config: EAxiosRequestConfig): Promise<T>
+  <T = any>(url: string, config?: EAxiosRequestConfig): Promise<T>
 }
