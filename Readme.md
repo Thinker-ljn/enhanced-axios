@@ -46,16 +46,19 @@ someServiceApi()
 
 ## 使用
 
-```js
+```ts
 import {
   enhancedAxios,
   // 用于生成自定义的 401 拦截器
   genIfUnauthorizedInterceptor,
 } from 'enhanced-axios'
+import type { EAxiosInstance } from 'enhanced-axios'
+
+const businessService = axios.create({}) as EAxiosInstance
 
 enhancedAxios(
   // axios 实例
-  service,
+  businessService,
   {
     // 成功的业务代码
     validBusinessCodes: [200],
@@ -77,8 +80,7 @@ enhancedAxios(
   }
 )
 
-
-service({
+businessService<MyBusinessDataType>({
   url: 'api-url',
   method: 'get',
   // 如上
@@ -86,7 +88,7 @@ service({
   // 禁止弹出接口返回的 message 及配置的 _feedback
   _silent: true
 }).then((businessData) => {
-  // 获取业务数据
+  // 获取业务数据，类型：MyBusinessDataType
   console.log(businessData)
 }, (error) => {
   // 捕获 http 错误或业务错误
@@ -94,6 +96,9 @@ service({
   // 打印由插件默认生成的错误信息
   console.log(error._formatMessage())
 })
+
+// 如果你的某些请求，想要原始的响应对象，那么创建多一个 axios 实例来请求即可
+const originService = axios.create({}) // AxiosInstance
 
 ```
 

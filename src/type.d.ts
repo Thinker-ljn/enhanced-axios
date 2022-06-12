@@ -1,4 +1,10 @@
-import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
+import {
+  AxiosError,
+  AxiosRequestConfig,
+  AxiosResponse,
+  AxiosDefaults,
+  AxiosInterceptorManager,
+} from 'axios'
 
 export type BusinessCode = string | number
 export type BusinessCodes = BusinessCode[]
