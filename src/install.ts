@@ -3,11 +3,14 @@ import { injectAliasInterceptor } from './alias'
 import { injectAuthorizationCheck } from './authorization'
 import { injectBusinessResultParser } from './business'
 import { injectFinalErrorHandler } from './final-error'
-import { EAConfig } from './type'
+import { EAConfig, EAxiosInstance } from './type'
 import { getKeys } from './utils/keyof'
 import { noneReject, noneResolve } from './utils/none-func'
 
-const enhancedAxios = (axios: Axios | AxiosInstance, config: EAConfig) => {
+const enhancedAxios = <T extends Axios | AxiosInstance | EAxiosInstance>(
+  axios: T,
+  config: EAConfig
+): T => {
   injectAliasInterceptor(config, axios)
   injectAuthorizationCheck(config, axios)
   injectBusinessResultParser(config, axios)
@@ -15,7 +18,7 @@ const enhancedAxios = (axios: Axios | AxiosInstance, config: EAConfig) => {
 
   const { interceptors } = config
   if (!interceptors) {
-    return
+    return axios
   }
 
   const keys = getKeys(interceptors)
