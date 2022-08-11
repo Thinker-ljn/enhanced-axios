@@ -102,4 +102,4 @@ const originService = axios.create({}) // AxiosInstance
 
 ```
 
-[详细的配置信息请看：src/type.ts](src/type.ts)
+[详细的配置信息请看：src/type.ts](src/type.d.ts)
