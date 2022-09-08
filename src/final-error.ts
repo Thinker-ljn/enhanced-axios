@@ -26,7 +26,7 @@ export function injectFinalErrorHandler(eaConfig: EAConfig, axios?: Axios) {
     }
 
     if (error._formatMessage) {
-      if (!isSilent(error.config)) {
+      if (!isSilent(error.config || {})) {
         const message = error._formatMessage()
         warning(message)
       }
