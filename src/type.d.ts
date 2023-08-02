@@ -38,6 +38,10 @@ export interface EAConfig {
   validBusinessCodes: BusinessCodes
   /**拦截器 */
   interceptors?: EAExtraInterceptors
+  /**前置拦截器 */
+  frontInterceptors?: EAExtraInterceptors
+  /**是否返回业务数据，默认为 true，如果设置为 false 则会返回响应数据：response.data */
+  returnBusinessData?: boolean
   /**业务数据与业务代码的别名, 默认是 code message data */
   businessAlias?: EAAlias
   /**用户未认证的业务代码 */

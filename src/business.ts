@@ -43,8 +43,8 @@ export function injectBusinessResultParser(eaConfig: EAConfig, axios?: Axios) {
             eaConfig.success(finalMsg)
           }
         }
-        // 返回真正的业务数据
-        return data
+        // 返回响应数据或者真正的业务数据
+        return eaConfig.returnBusinessData === false ? responseData : data
       }
     } else {
       return responseData
