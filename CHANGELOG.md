@@ -1,3 +1,18 @@
+# [1.2.0](https://github.com/Thinker-ljn/enhanced-axios/compare/v1.1.0...v1.2.0) (2023-09-01)
+
+
+### Bug Fixes
+
+* 过滤空的成功或错误的信息 ([8ee4ad3](https://github.com/Thinker-ljn/enhanced-axios/commit/8ee4ad357068fa3abba512ce0e0ee437bed9b40b))
+
+
+### Features
+
+* 增加中置拦截器 ([e6caacc](https://github.com/Thinker-ljn/enhanced-axios/commit/e6caacca2baf483f0b3f91d83f6e763a6f87b418))
+* genIfUnauthorizedInterceptor 的参数回调函数中增加响应错误的参数 ([e5c4848](https://github.com/Thinker-ljn/enhanced-axios/commit/e5c48485c6058eb8b7297d02a0b512632a6a672c))
+
+
+
 # [1.1.0](https://github.com/Thinker-ljn/enhanced-axios/compare/v1.0.0-beta.1...v1.1.0) (2023-08-02)
 
 
