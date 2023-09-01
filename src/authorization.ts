@@ -53,11 +53,11 @@ export function injectAuthorizationCheck(eaConfig: EAConfig, axios?: Axios) {
 }
 
 export function genIfUnauthorizedInterceptor(
-  callback: (config: AxiosRequestConfig) => Promise<any>
+  callback: (config: AxiosRequestConfig, e: EAxiosError) => Promise<any>
 ) {
   return function ifUnauthorizedInterceptor(e: EAxiosError) {
     if (isUnauthorizedResponse(e.response)) {
-      return callback(e.config)
+      return callback(e.config, e)
     }
     return Promise.reject(e)
   }
