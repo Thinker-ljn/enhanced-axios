@@ -39,7 +39,7 @@ export function injectBusinessResultParser(eaConfig: EAConfig, axios?: Axios) {
         const feedback = config._feedback || eaConfig._feedback
         if (feedback && !config._silent) {
           const finalMsg = parseFeedback(message, feedback)
-          if (typeof finalMsg === 'string' && eaConfig.success) {
+          if (finalMsg && typeof finalMsg === 'string' && eaConfig.success) {
             eaConfig.success(finalMsg)
           }
         }

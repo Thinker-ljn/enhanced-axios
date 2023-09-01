@@ -11,7 +11,7 @@ function isAxiosError(error: EAxiosError) {
 
 export function injectFinalErrorHandler(eaConfig: EAConfig, axios?: Axios) {
   const warning = (msg: string) => {
-    if (eaConfig.warning) {
+    if (eaConfig.warning && msg) {
       eaConfig.warning(msg)
     }
   }
