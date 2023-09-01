@@ -38,6 +38,8 @@ export interface EAConfig {
   validBusinessCodes: BusinessCodes
   /**拦截器 */
   interceptors?: EAExtraInterceptors
+  /**中置拦截器 */
+  middleInterceptors?: EAExtraInterceptors
   /**前置拦截器 */
   frontInterceptors?: EAExtraInterceptors
   /**是否返回业务数据，默认为 true，如果设置为 false 则会返回响应数据：response.data */

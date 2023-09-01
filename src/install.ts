@@ -26,9 +26,15 @@ const enhancedAxios = <T extends Axios | AxiosInstance | EAxiosInstance>(
   if (config.frontInterceptors) {
     runInterceptors(config.frontInterceptors)
   }
+
   injectAliasInterceptor(config, axios)
   injectAuthorizationCheck(config, axios)
   injectBusinessResultParser(config, axios)
+
+  if (config.middleInterceptors) {
+    runInterceptors(config.middleInterceptors)
+  }
+
   injectFinalErrorHandler(config, axios)
 
   if (config.interceptors) {
