@@ -74,15 +74,29 @@ export function createError(
   return enhanceError(error, config, code, request, response)
 }
 
+function parseCodeMsg(error: EAxiosError) {
+  if (!error.response) return ''
+  const { status, statusText } = error.response
+  const aliasData = error.response._business || ({} as EAxiosBusinessResult)
+  return {
+    code: aliasData.code || status,
+    msg:
+      aliasData.message || statusText || error.message || '网络异常~请稍候再试',
+  }
+}
+
 export function addFormatMessage(error: EAxiosError) {
-  error._formatMessage = () => {
-    if (!error.response) return ''
-    const { status, statusText } = error.response
-    const aliasData = error.response._business || ({} as EAxiosBusinessResult)
-    const defaultMsg = `[${aliasData.code || status}]: ${
-      aliasData.message || statusText || error.message || '网络异常~请稍候再试'
-    }`
+  error._formatCodeMessage = () => {
+    const res = parseCodeMsg(error)
+    if (!res) return ''
+    const { code, msg } = res
+    const defaultMsg = `[${code}]: ${msg}`
 
     return defaultMsg
+  }
+  error._formatMessage = () => {
+    const res = parseCodeMsg(error)
+    if (!res) return ''
+    return res.msg
   }
 }

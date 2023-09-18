@@ -83,6 +83,7 @@ export type EAxiosError = AxiosError & {
   response?: EAxiosResponse
   /**可输出由原响应错误转换的默认报错信息 */
   _formatMessage?: () => string
+  _formatCodeMessage?: () => string
 }
 
 export class EAxios {

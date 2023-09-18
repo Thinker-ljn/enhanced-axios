@@ -72,11 +72,14 @@ describe('alias interceptors', () => {
   it('should has _formatMessage property and return correct', async () => {
     await reject(gErr('')).catch((e) => {
       expect(e).toHaveProperty('_formatMessage')
-      expect(e._formatMessage()).toBe('[400]: 网络异常~请稍候再试')
+      expect(e).toHaveProperty('_formatCodeMessage')
+      expect(e._formatCodeMessage()).toBe('[400]: 网络异常~请稍候再试')
+      expect(e._formatMessage()).toBe('网络异常~请稍候再试')
     })
 
     await reject(gErr('', { message: 'abcde', code: 123 })).catch((e) => {
-      expect(e._formatMessage()).toBe('[123]: abcde')
+      expect(e._formatCodeMessage()).toBe('[123]: abcde')
+      expect(e._formatMessage()).toBe('abcde')
     })
   })
 })
