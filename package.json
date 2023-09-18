@@ -1,6 +1,6 @@
 {
   "name": "enhanced-axios",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "a enhanced axios with preset interceptors",
   "keywords": [
     "axios",

@@ -1,3 +1,12 @@
+## [1.2.1](https://github.com/Thinker-ljn/enhanced-axios/compare/v1.2.0...v1.2.1) (2023-09-18)
+
+
+### Features
+
+* add _formatCodeMessage ([232e055](https://github.com/Thinker-ljn/enhanced-axios/commit/232e055da9a53c78f03f1ddb5eda0d8bb31a9f92))
+
+
+
 # [1.2.0](https://github.com/Thinker-ljn/enhanced-axios/compare/v1.1.0...v1.2.0) (2023-09-01)
 
 
