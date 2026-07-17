@@ -1,3 +1,20 @@
+# [2.0.0-rc.1](https://github.com/Thinker-ljn/enhanced-axios/compare/v1.2.1...v2.0.0-rc.1) (2026-07-17)
+
+
+* feat!: upgrade axios to v1 ([c5ff827](https://github.com/Thinker-ljn/enhanced-axios/commit/c5ff8277589f1560659afa9815de5df4d47cc4ff))
+
+
+### BREAKING CHANGES
+
+* require axios ^1.0.0 and drop axios 0.x support.
+
+  - add axios as a peer dependency
+  - update development dependency to axios ^1.18.1
+  - adapt interceptor and error types for Axios 1.x
+  - externalize axios from build outputs
+
+
+
 ## [1.2.1](https://github.com/Thinker-ljn/enhanced-axios/compare/v1.2.0...v1.2.1) (2023-09-18)
 
 
