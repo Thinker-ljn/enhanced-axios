@@ -1,6 +1,7 @@
 import { parseAliasResult } from '@/alias'
 import { injectBusinessResultParser, parseFeedback } from '@/business'
 import { EAxiosError, EAxiosResponse } from '@/type'
+import { createTestConfig } from '../__test-utils__/helpers'
 
 describe('business interceptors parseFeedback', () => {
   it('should use apiMsg when feedbackMsg is empty', () => {
@@ -33,7 +34,7 @@ describe('business interceptors parser', () => {
     status: 200,
     statusText: '',
     headers: {},
-    config: {},
+    config: createTestConfig(),
     _business: parseAliasResult(data),
   })
 

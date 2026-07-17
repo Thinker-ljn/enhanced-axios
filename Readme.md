@@ -46,6 +46,8 @@ someServiceApi()
 
 ## 使用
 
+> 2.x 版本要求项目中安装 `axios@^1.0.0`。如果仍在使用 axios 0.x，请继续使用 enhanced-axios 1.x。
+
 ```ts
 import {
   enhancedAxios,

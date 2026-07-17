@@ -1,5 +1,10 @@
-import { Axios } from 'axios'
-import { EAConfig, EAxiosRequestConfig, EAxiosResponse } from './type'
+import { AxiosInstance } from 'axios'
+import {
+  EAConfig,
+  EAxiosInstance,
+  EAxiosRequestConfig,
+  EAxiosResponse,
+} from './type'
 import { createError } from './utils/axios-error'
 
 // 如果 feedback 是一个字符串元组，代表可选，如果接口没有返回 msg，则使用 feedback
@@ -15,7 +20,10 @@ export function parseFeedback(
   return isOption ? apiMsg || feedback[0] : apiMsg
 }
 
-export function injectBusinessResultParser(eaConfig: EAConfig, axios?: Axios) {
+export function injectBusinessResultParser(
+  eaConfig: EAConfig,
+  axios?: AxiosInstance | EAxiosInstance
+) {
   const parser = (response: EAxiosResponse) => {
     const { _business } = response
 

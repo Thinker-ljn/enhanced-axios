@@ -6,6 +6,7 @@ import type {
   EAConfig,
   EAxiosBusinessResult,
   EAxiosError,
+  EAxiosInternalRequestConfig,
   EAxiosRequestConfig,
   EAxiosResponse,
   EAxiosInstance,
@@ -20,6 +21,7 @@ export {
   EAxiosError,
   EAxiosResponse,
   EAxiosBusinessResult,
+  EAxiosInternalRequestConfig,
   EAxiosRequestConfig,
   EAxiosInstance,
 }

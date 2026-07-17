@@ -4,22 +4,43 @@ import {
   AxiosResponse,
   AxiosDefaults,
   AxiosInterceptorManager,
+  InternalAxiosRequestConfig,
 } from 'axios'
 
 export type BusinessCode = string | number
 export type BusinessCodes = BusinessCode[]
 
-interface InterceptorResolveHandler {
-  (config: EAxiosRequestConfig):
-    | EAxiosRequestConfig
-    | Promise<EAxiosRequestConfig>
+export interface EAxiosInternalRequestConfig<D = any>
+  extends InternalAxiosRequestConfig<D> {
+  /**
+   * 是否在成功时弹出接口返回的 message （可传字符串，覆盖接口返回的信息），需要注册 success 函数
+   * 可传入一个字符串元组，表示可选，如果接口无返回则使用，如：{ _feedback: ['这是备用的成功信息'] }
+   */
+  _feedback?: boolean | string | [string]
+  /**
+   * 禁止弹出接口返回的 message 及配置的 _feedback
+   */
+  _silent?: boolean
+}
+
+interface RequestInterceptorResolveHandler {
+  (config: EAxiosInternalRequestConfig):
+    | EAxiosInternalRequestConfig
+    | Promise<EAxiosInternalRequestConfig>
 }
 interface InterceptorRejectHandler {
   (error: EAxiosError): any | Promise<never>
 }
-type InterceptorHandlers = Array<
-  | [InterceptorResolveHandler | undefined, InterceptorRejectHandler]
-  | [InterceptorResolveHandler]
+interface ResponseInterceptorResolveHandler {
+  (response: EAxiosResponse): any | Promise<any>
+}
+type RequestInterceptorHandlers = Array<
+  | [RequestInterceptorResolveHandler | undefined, InterceptorRejectHandler]
+  | [RequestInterceptorResolveHandler]
+>
+type ResponseInterceptorHandlers = Array<
+  | [ResponseInterceptorResolveHandler | undefined, InterceptorRejectHandler]
+  | [ResponseInterceptorResolveHandler]
 >
 
 export interface EAAlias {
@@ -29,8 +50,8 @@ export interface EAAlias {
 }
 
 export interface EAExtraInterceptors {
-  request: InterceptorHandlers
-  response: InterceptorHandlers
+  request: RequestInterceptorHandlers
+  response: ResponseInterceptorHandlers
 }
 
 export interface EAConfig {
@@ -73,13 +94,17 @@ export interface EAxiosBusinessResult {
   data: any
 }
 
-export type EAxiosResponse = AxiosResponse & {
-  config?: EAxiosRequestConfig
+export type EAxiosResponse<T = any, D = any> = Omit<
+  AxiosResponse<T, D>,
+  'config'
+> & {
+  config: EAxiosInternalRequestConfig<D>
   /**由原响应数据经 EAConfig['businessAlias'] 转换的业务数据 */
   _business?: EAxiosBusinessResult
 }
 
 export type EAxiosError = AxiosError & {
+  config?: EAxiosInternalRequestConfig
   response?: EAxiosResponse
   /**可输出由原响应错误转换的默认报错信息 */
   _formatMessage?: () => string
@@ -90,7 +115,7 @@ export class EAxios {
   constructor(config?: EAxiosRequestConfig)
   defaults: AxiosDefaults
   interceptors: {
-    request: AxiosInterceptorManager<EAxiosRequestConfig>
+    request: AxiosInterceptorManager<EAxiosInternalRequestConfig>
     response: AxiosInterceptorManager<AxiosResponse>
   }
   getUri(config?: EAxiosRequestConfig): string

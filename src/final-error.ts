@@ -1,5 +1,5 @@
-import { Axios } from 'axios'
-import { EAConfig, EAxiosError } from './type'
+import { AxiosInstance } from 'axios'
+import { EAConfig, EAxiosError, EAxiosInstance } from './type'
 import { noneResolve } from './utils/none-func'
 import { isSilent } from './utils/silent'
 
@@ -9,7 +9,10 @@ function isAxiosError(error: EAxiosError) {
   return error.isAxiosError
 }
 
-export function injectFinalErrorHandler(eaConfig: EAConfig, axios?: Axios) {
+export function injectFinalErrorHandler(
+  eaConfig: EAConfig,
+  axios?: AxiosInstance | EAxiosInstance
+) {
   const warning = (msg: string) => {
     if (eaConfig.warning && msg) {
       eaConfig.warning(msg)

@@ -1,6 +1,7 @@
 import { EAxiosResponse } from '@/type'
 import { createError } from '@/utils/axios-error'
 import { injectAliasInterceptor, parseAliasResult } from '../alias'
+import { createTestConfig } from '../__test-utils__/helpers'
 
 describe('parseAliasResult should return origin value', () => {
   it('when pass not a object value', () => {
@@ -53,7 +54,7 @@ describe('alias interceptors', () => {
     status: 400,
     statusText: '',
     headers: {},
-    config: {},
+    config: createTestConfig(),
   })
 
   const gErr = (msg: string, data: any = null) => {

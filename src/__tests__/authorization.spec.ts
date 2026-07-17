@@ -3,6 +3,7 @@ import { injectAuthorizationCheck } from '@/authorization'
 import { EAxiosError, EAxiosResponse } from '@/type'
 import { createError } from '@/utils/axios-error'
 import { createUnauthorizationError } from '@/utils/axios-response'
+import { createTestConfig } from '../__test-utils__/helpers'
 
 describe('authorization interceptors', () => {
   const gRes = (data: any = null): EAxiosResponse => ({
@@ -10,7 +11,7 @@ describe('authorization interceptors', () => {
     status: 500,
     statusText: '',
     headers: {},
-    config: {},
+    config: createTestConfig(),
     _business: parseAliasResult(data),
   })
 

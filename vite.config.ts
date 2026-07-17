@@ -14,6 +14,14 @@ export default defineConfig({
       formats: ['es', 'cjs', 'umd'],
       fileName: (format) => `${PackageName}.${format}${prod ? '.min' : ''}.js`,
     },
+    rollupOptions: {
+      external: ['axios'],
+      output: {
+        globals: {
+          axios: 'axios',
+        },
+      },
+    },
     minify: prod,
     emptyOutDir: prod,
   },
