@@ -32,7 +32,7 @@ export function injectBusinessResultParser(
 
     const { code, message, data } = _business || {}
     // 处理业务逻辑
-    if (code !== undefined && message !== undefined) {
+    if (code !== undefined) {
       const validCodes = eaConfig.validBusinessCodes || []
       if (!validCodes.includes(code)) {
         const axiosError = createError(

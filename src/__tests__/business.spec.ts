@@ -55,6 +55,22 @@ describe('business interceptors parser', () => {
     expect(success).toHaveBeenCalled()
   })
 
+  it('should return business data when message is missing', () => {
+    const res = gRes({ code: 0, data: { a: 'a' } })
+    const output = resolve(res) as any
+    expect(output).toMatchObject({ a: 'a' })
+  })
+
+  it('should return axios error with default message when business message is missing', async () => {
+    const resError = gRes({ code: 1 })
+    const output = resolve(resError) as any
+
+    await output.catch((e: EAxiosError) => {
+      expect(e.isAxiosError).toBe(true)
+      expect(e.message).toBe('业务请求有误，数据解析失败')
+    })
+  })
+
   it('should return business data', () => {
     const res = gRes({ flag: 0, msg: 'success' })
     const output = resolve(res) as any
