@@ -1,3 +1,21 @@
+# [2.0.0-rc.2](https://github.com/Thinker-ljn/enhanced-axios/compare/v2.0.0-rc.1...v2.0.0-rc.2) (2026-08-20)
+
+
+### Bug Fixes
+
+* align enhanced instance method return types ([f05817c](https://github.com/Thinker-ljn/enhanced-axios/commit/f05817c84e403d7e1c7a6d85049efd83db22812a))
+* make extra interceptor groups optional ([a94224a](https://github.com/Thinker-ljn/enhanced-axios/commit/a94224a860df7a924eb97e34f233f84d88bf2233))
+* preserve falsy business code in formatted errors ([d94d5c1](https://github.com/Thinker-ljn/enhanced-axios/commit/d94d5c1db76ba70ceb2217a1d6349dc2260ca680))
+
+
+### Features
+
+* add unauthorizedBusinessCodes option ([9e7b09b](https://github.com/Thinker-ljn/enhanced-axios/commit/9e7b09bdbb4394fd795a49d2dc0d2ca878f4d2f9))
+* parse business responses by code presence ([1001c1e](https://github.com/Thinker-ljn/enhanced-axios/commit/1001c1eda24bdabff1d945600eed6657b14b66be))
+* support fallback business aliases ([a8e62eb](https://github.com/Thinker-ljn/enhanced-axios/commit/a8e62eba2b038a11fb50c06fcf1087866d4e8a71))
+
+
+
 # [2.0.0-rc.1](https://github.com/Thinker-ljn/enhanced-axios/compare/v1.2.1...v2.0.0-rc.1) (2026-07-17)
 
 
