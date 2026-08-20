@@ -69,6 +69,11 @@ export interface EAConfig {
   /**业务数据与业务代码的别名, 默认是 code message data */
   businessAlias?: EAAlias
   /**用户未认证的业务代码 */
+  unauthorizedBusinessCodes?: BusinessCodes
+  /**
+   * 用户未认证的业务代码，保留用于兼容旧拼写
+   * @deprecated 请使用 unauthorizedBusinessCodes
+   */
   unanthorizedBusinessCodes?: BusinessCodes
   /**执行成功信息的函数，一般是UI组件的函数 */
   success?: (msg: string) => any

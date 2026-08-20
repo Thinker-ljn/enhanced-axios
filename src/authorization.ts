@@ -16,9 +16,12 @@ export function injectAuthorizationCheck(
   eaConfig: EAConfig,
   axios?: AxiosInstance | EAxiosInstance
 ) {
+  const unauthorizedCodes =
+    eaConfig.unauthorizedBusinessCodes ??
+    eaConfig.unanthorizedBusinessCodes ??
+    []
   const invalidCode = (business?: EAxiosBusinessResult) =>
-    business &&
-    (eaConfig.unanthorizedBusinessCodes || []).includes(business.code)
+    business && unauthorizedCodes.includes(business.code)
 
   const resolve = (res: EAxiosResponse) => {
     const { _business } = res

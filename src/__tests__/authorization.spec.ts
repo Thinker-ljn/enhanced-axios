@@ -25,6 +25,19 @@ describe('authorization interceptors', () => {
     unanthorizedBusinessCodes: [401401],
   })
 
+  const { resolve: resolveWithUnauthorizedBusinessCodes } =
+    injectAuthorizationCheck({
+      validBusinessCodes: [],
+      unauthorizedBusinessCodes: [401402],
+    })
+
+  const { resolve: resolveWithBothUnauthorizedOptions } =
+    injectAuthorizationCheck({
+      validBusinessCodes: [],
+      unauthorizedBusinessCodes: [401403],
+      unanthorizedBusinessCodes: [401404],
+    })
+
   it('should return custom 401Error property', async () => {
     const res = resolve(gRes({ code: 401401, message: '未认证呀...' })) as any
 
@@ -32,6 +45,23 @@ describe('authorization interceptors', () => {
       expect(e.response?.status).toBe(401)
       expect(e.message).toBe('未认证呀...')
     })
+  })
+
+  it('should return custom 401Error property with unauthorizedBusinessCodes', async () => {
+    const res = resolveWithUnauthorizedBusinessCodes(
+      gRes({ code: 401402, message: '未认证呀...' })
+    ) as any
+
+    await res.catch((e: EAxiosError) => {
+      expect(e.response?.status).toBe(401)
+      expect(e.message).toBe('未认证呀...')
+    })
+  })
+
+  it('should prefer unauthorizedBusinessCodes over legacy option', () => {
+    const input = gRes({ code: 401404, message: '旧配置未认证码' })
+    const res = resolveWithBothUnauthorizedOptions(input) as any
+    expect(res).toBe(input)
   })
 
   it('should return origin input when business success', () => {

@@ -65,7 +65,7 @@ enhancedAxios(
     // 成功的业务代码
     validBusinessCodes: [200],
     // 用户未认证的业务代码
-    unanthorizedBusinessCodes: [10011039, 10011040, 10011041],
+    unauthorizedBusinessCodes: [10011039, 10011040, 10011041],
     // 业务数据与业务代码的别名, 默认是 code message data
     businessAlias: { data: 'result' },
     // 执行失败信息的函数，一般是UI组件的函数
