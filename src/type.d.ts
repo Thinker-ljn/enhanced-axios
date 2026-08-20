@@ -125,36 +125,36 @@ export class EAxios {
     response: AxiosInterceptorManager<AxiosResponse>
   }
   getUri(config?: EAxiosRequestConfig): string
-  request<T = any, R = AxiosResponse<T>, D = any>(
+  request<T = any, R = T, D = any>(
     config: EAxiosRequestConfig<D>
   ): Promise<R>
-  get<T = any, R = AxiosResponse<T>, D = any>(
+  get<T = any, R = T, D = any>(
     url: string,
     config?: EAxiosRequestConfig<D>
   ): Promise<R>
-  delete<T = any, R = AxiosResponse<T>, D = any>(
+  delete<T = any, R = T, D = any>(
     url: string,
     config?: EAxiosRequestConfig<D>
   ): Promise<R>
-  head<T = any, R = AxiosResponse<T>, D = any>(
+  head<T = any, R = T, D = any>(
     url: string,
     config?: EAxiosRequestConfig<D>
   ): Promise<R>
-  options<T = any, R = AxiosResponse<T>, D = any>(
+  options<T = any, R = T, D = any>(
     url: string,
     config?: EAxiosRequestConfig<D>
   ): Promise<R>
-  post<T = any, R = AxiosResponse<T>, D = any>(
-    url: string,
-    data?: D,
-    config?: EAxiosRequestConfig<D>
-  ): Promise<R>
-  put<T = any, R = AxiosResponse<T>, D = any>(
+  post<T = any, R = T, D = any>(
     url: string,
     data?: D,
     config?: EAxiosRequestConfig<D>
   ): Promise<R>
-  patch<T = any, R = AxiosResponse<T>, D = any>(
+  put<T = any, R = T, D = any>(
+    url: string,
+    data?: D,
+    config?: EAxiosRequestConfig<D>
+  ): Promise<R>
+  patch<T = any, R = T, D = any>(
     url: string,
     data?: D,
     config?: EAxiosRequestConfig<D>
