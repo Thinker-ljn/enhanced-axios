@@ -34,7 +34,7 @@ function parseCodeMsg(error: EAxiosError) {
   const { status, statusText } = error.response
   const aliasData = error.response._business || ({} as EAxiosBusinessResult)
   return {
-    code: aliasData.code || status,
+    code: aliasData.code ?? status,
     msg:
       aliasData.message || statusText || error.message || '网络异常~请稍候再试',
   }

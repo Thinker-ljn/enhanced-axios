@@ -116,5 +116,10 @@ describe('alias interceptors', () => {
       expect(e._formatCodeMessage()).toBe('[123]: abcde')
       expect(e._formatMessage()).toBe('abcde')
     })
+
+    await reject(gErr('', { message: 'abcde', code: 0 })).catch((e) => {
+      expect(e._formatCodeMessage()).toBe('[0]: abcde')
+      expect(e._formatMessage()).toBe('abcde')
+    })
   })
 })
