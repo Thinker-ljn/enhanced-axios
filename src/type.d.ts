@@ -9,6 +9,7 @@ import {
 
 export type BusinessCode = string | number
 export type BusinessCodes = BusinessCode[]
+export type EAAliasKey = string | string[]
 
 export interface EAxiosInternalRequestConfig<D = any>
   extends InternalAxiosRequestConfig<D> {
@@ -44,9 +45,9 @@ type ResponseInterceptorHandlers = Array<
 >
 
 export interface EAAlias {
-  code?: string
-  message?: string
-  data?: string
+  code?: EAAliasKey
+  message?: EAAliasKey
+  data?: EAAliasKey
 }
 
 export interface EAExtraInterceptors {

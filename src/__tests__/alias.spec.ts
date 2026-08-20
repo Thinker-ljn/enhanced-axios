@@ -46,6 +46,40 @@ describe('parseAliasResult should return business value', () => {
       data: {},
     })
   })
+
+  it('should pick first defined fallback alias value', () => {
+    expect(
+      parseAliasResult(
+        {
+          code: 0,
+          msg: 'success',
+          data: ['fallback data'],
+        },
+        { message: ['message', 'msg'], data: ['result', 'data'] }
+      )
+    ).toMatchObject({
+      code: 0,
+      message: 'success',
+      data: ['fallback data'],
+    })
+
+    expect(
+      parseAliasResult(
+        {
+          code: 0,
+          message: 'success',
+          msg: 'fallback message',
+          result: ['result data'],
+          data: ['fallback data'],
+        },
+        { message: ['message', 'msg'], data: ['result', 'data'] }
+      )
+    ).toMatchObject({
+      code: 0,
+      message: 'success',
+      data: ['result data'],
+    })
+  })
 })
 
 describe('alias interceptors', () => {

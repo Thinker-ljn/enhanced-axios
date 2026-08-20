@@ -15,6 +15,18 @@ export const defaultAlias = {
   data: 'data',
 }
 
+function pickAliasValue(source: any, alias: string | string[]) {
+  const keys = Array.isArray(alias) ? alias : [alias]
+
+  for (const key of keys) {
+    if (source[key] !== undefined) {
+      return source[key]
+    }
+  }
+
+  return undefined
+}
+
 export const parseAliasResult = (
   resData: any,
   alias: EAAlias = {}
@@ -24,9 +36,9 @@ export const parseAliasResult = (
   }
   const { code, message, data } = { ...defaultAlias, ...alias }
   return {
-    code: resData[code],
-    message: resData[message],
-    data: resData[data],
+    code: pickAliasValue(resData, code),
+    message: pickAliasValue(resData, message),
+    data: pickAliasValue(resData, data),
   }
 }
 
