@@ -51,8 +51,8 @@ export interface EAAlias {
 }
 
 export interface EAExtraInterceptors {
-  request: RequestInterceptorHandlers
-  response: ResponseInterceptorHandlers
+  request?: RequestInterceptorHandlers
+  response?: ResponseInterceptorHandlers
 }
 
 export interface EAConfig {

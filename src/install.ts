@@ -11,12 +11,12 @@ const enhancedAxios = <T extends AxiosInstance | EAxiosInstance>(
   config: EAConfig
 ): T => {
   function runInterceptors(interceptors: EAExtraInterceptors) {
-    interceptors.request.forEach((icpts) => {
+    interceptors.request?.forEach((icpts) => {
       const [resolve = noneResolve, reject = noneReject] = icpts || []
       axios.interceptors.request.use(resolve, reject)
     })
 
-    interceptors.response.forEach((icpts) => {
+    interceptors.response?.forEach((icpts) => {
       const [resolve = noneResolve, reject = noneReject] = icpts || []
       axios.interceptors.response.use(resolve, reject)
     })
