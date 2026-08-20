@@ -1,5 +1,19 @@
 import { EAxiosBusinessResult, EAxiosError, EAxiosRequestConfig } from '@/type'
-import { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
+import {
+  AxiosError,
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios'
+
+export function normalizeConfig(
+  config: AxiosRequestConfig = {}
+): InternalAxiosRequestConfig {
+  return {
+    ...config,
+    headers: config.headers || {},
+  } as InternalAxiosRequestConfig
+}
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -18,10 +32,11 @@ export function createError(
   request?: XMLHttpRequest,
   response?: AxiosResponse
 ): EAxiosError {
+  const finalConfig = normalizeConfig(config)
   const error = new AxiosError(
     message,
     code,
-    config as InternalAxiosRequestConfig,
+    finalConfig,
     request,
     response
   ) as EAxiosError

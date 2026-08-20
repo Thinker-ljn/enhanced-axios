@@ -72,6 +72,8 @@ describe('authorization interceptors', () => {
 
   it('should return origin input when pass normal http error', async () => {
     const err401 = createUnauthorizationError({})
+    expect(err401.config?.headers).toBeDefined()
+    expect(err401.response?.config.headers).toBeDefined()
     await reject(err401).catch((e) => {
       expect(e).toBe(err401)
     })
