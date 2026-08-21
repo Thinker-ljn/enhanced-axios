@@ -21,7 +21,7 @@ export function injectAuthorizationCheck(
     eaConfig.unanthorizedBusinessCodes ??
     []
   const invalidCode = (business?: EAxiosBusinessResult) =>
-    business && unauthorizedCodes.includes(business.code)
+    business?.code !== undefined && unauthorizedCodes.includes(business.code)
 
   const resolve = (res: EAxiosResponse) => {
     const { _business } = res
@@ -64,7 +64,7 @@ export function injectAuthorizationCheck(
 }
 
 export function genIfUnauthorizedInterceptor(
-  callback: (config: AxiosRequestConfig, e: EAxiosError) => Promise<any>
+  callback: (config: AxiosRequestConfig, e: EAxiosError) => any | Promise<any>
 ) {
   return function ifUnauthorizedInterceptor(e: EAxiosError) {
     if (isUnauthorizedResponse(e.response)) {

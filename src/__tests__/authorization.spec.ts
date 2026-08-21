@@ -1,5 +1,8 @@
 import { parseAliasResult } from '@/alias'
-import { injectAuthorizationCheck } from '@/authorization'
+import {
+  genIfUnauthorizedInterceptor,
+  injectAuthorizationCheck,
+} from '@/authorization'
 import { EAxiosError, EAxiosResponse } from '@/type'
 import { createError } from '@/utils/axios-error'
 import { createUnauthorizationError } from '@/utils/axios-response'
@@ -93,5 +96,12 @@ describe('authorization interceptors', () => {
       expect(e.response?.status).toBe(401)
       expect(e.message).toBe('未认证呀..')
     })
+  })
+
+  it('should allow sync unauthorized callback', () => {
+    const err401 = createUnauthorizationError({})
+    const interceptor = genIfUnauthorizedInterceptor(() => 'redirect-login')
+
+    expect(interceptor(err401)).toBe('redirect-login')
   })
 })
