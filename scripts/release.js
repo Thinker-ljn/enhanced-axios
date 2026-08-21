@@ -41,6 +41,7 @@ const step = (msg) => console.log(chalk.cyan(msg))
 const releaseState = {
   targetVersion: null,
   releaseTag: null,
+  currentBranch: null,
   currentStep: null,
 }
 
@@ -62,6 +63,19 @@ async function runStep(name, message, action) {
   releaseState.currentStep = name
   step(message)
   await action()
+}
+
+async function getCurrentBranch() {
+  const { stdout } = await run('git', ['branch', '--show-current'], {
+    stdio: 'pipe',
+  })
+  const branch = stdout.trim()
+
+  if (!branch) {
+    throw new Error('Cannot push release commit from detached HEAD.')
+  }
+
+  return branch
 }
 
 function printCommands(commands) {
@@ -89,6 +103,14 @@ function getReleaseCommand() {
   return commandArgs.join(' ')
 }
 
+function getPushCommitCommand() {
+  if (!releaseState.currentBranch) {
+    return 'git push'
+  }
+
+  return `git push origin HEAD:${releaseState.currentBranch}`
+}
+
 function printFailureHelp(err) {
   const { currentStep, targetVersion } = releaseState
 
@@ -107,6 +129,11 @@ function printFailureHelp(err) {
     return
   }
 
+  if (currentStep === 'branch') {
+    printCommands(['git status --short --branch', 'git checkout <branch>'])
+    return
+  }
+
   if (currentStep === 'version') {
     printCommands(['git status --short', getReleaseCommand()])
     return
@@ -122,7 +149,7 @@ function printFailureHelp(err) {
       getPublishCommand(),
       `git tag v${targetVersion}`,
       `git push origin refs/tags/v${targetVersion}`,
-      'git push',
+      getPushCommitCommand(),
     ])
     return
   }
@@ -136,7 +163,7 @@ function printFailureHelp(err) {
       getPublishCommand(),
       `git tag v${targetVersion}`,
       `git push origin refs/tags/v${targetVersion}`,
-      'git push',
+      getPushCommitCommand(),
     ])
     return
   }
@@ -149,7 +176,7 @@ function printFailureHelp(err) {
       getPublishCommand(),
       `git tag v${targetVersion}`,
       `git push origin refs/tags/v${targetVersion}`,
-      'git push',
+      getPushCommitCommand(),
     ])
     return
   }
@@ -162,7 +189,7 @@ function printFailureHelp(err) {
       getPublishCommand(),
       `git tag v${targetVersion}`,
       `git push origin refs/tags/v${targetVersion}`,
-      'git push',
+      getPushCommitCommand(),
     ])
     return
   }
@@ -171,18 +198,21 @@ function printFailureHelp(err) {
     printCommands([
       `git tag v${targetVersion}`,
       `git push origin refs/tags/v${targetVersion}`,
-      'git push',
+      getPushCommitCommand(),
     ])
     return
   }
 
   if (currentStep === 'push-tag') {
-    printCommands([`git push origin refs/tags/v${targetVersion}`, 'git push'])
+    printCommands([
+      `git push origin refs/tags/v${targetVersion}`,
+      getPushCommitCommand(),
+    ])
     return
   }
 
   if (currentStep === 'push') {
-    printCommands(['git push'])
+    printCommands([getPushCommitCommand()])
   }
 }
 
@@ -229,6 +259,10 @@ async function main() {
   if (!yes) {
     return
   }
+
+  await runStep('branch', '\nChecking current branch...', async () => {
+    releaseState.currentBranch = await getCurrentBranch()
+  })
 
   await runStep('tests', '\nRunning tests...', async () => {
     if (!skipTests && !isDryRun) {
@@ -279,7 +313,11 @@ async function main() {
     await runIfNotDry('git', ['push', 'origin', `refs/tags/v${targetVersion}`])
   })
   await runStep('push', '\nPushing release commit...', async () => {
-    await runIfNotDry('git', ['push'])
+    await runIfNotDry('git', [
+      'push',
+      'origin',
+      `HEAD:${releaseState.currentBranch}`,
+    ])
   })
 
   if (isDryRun) {
