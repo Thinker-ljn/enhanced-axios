@@ -1,5 +1,9 @@
 import { parseAliasResult } from '@/alias'
-import { injectBusinessResultParser, parseFeedback } from '@/business'
+import {
+  EA_BUSINESS_ERROR_CODE,
+  injectBusinessResultParser,
+  parseFeedback,
+} from '@/business'
 import { EAxiosError, EAxiosResponse } from '@/type'
 import { createTestConfig } from '../__test-utils__/helpers'
 
@@ -44,6 +48,7 @@ describe('business interceptors parser', () => {
 
     await output.catch((e: EAxiosError) => {
       expect(e.isAxiosError).toBe(true)
+      expect(e.code).toBe(EA_BUSINESS_ERROR_CODE)
       expect(e.message).toBe('error')
     })
   })

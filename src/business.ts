@@ -7,6 +7,8 @@ import {
 } from './type'
 import { createError } from './utils/axios-error'
 
+export const EA_BUSINESS_ERROR_CODE = 'BUSINESS_ERROR'
+
 // 如果 feedback 是一个字符串元组，代表可选，如果接口没有返回 msg，则使用 feedback
 export function parseFeedback(
   apiMsg?: string,
@@ -38,7 +40,7 @@ export function injectBusinessResultParser(
         const axiosError = createError(
           message || '业务请求有误，数据解析失败',
           response.config,
-          'BUSINESS_ERROR',
+          EA_BUSINESS_ERROR_CODE,
           undefined,
           response
         )
