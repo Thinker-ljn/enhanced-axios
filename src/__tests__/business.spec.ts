@@ -66,6 +66,22 @@ describe('business interceptors parser', () => {
     expect(output).toMatchObject({ a: 'a' })
   })
 
+  it('should skip business parser when shouldHandleBusinessResponse returns false', () => {
+    const { resolve } = injectBusinessResultParser({
+      validBusinessCodes: [0],
+      shouldHandleBusinessResponse: (responseData, business, response) => {
+        expect(responseData).toMatchObject({ code: 'USER_CODE' })
+        expect(business.code).toBe('USER_CODE')
+        expect(response.data).toBe(responseData)
+        return false
+      },
+    })
+    const res = gRes({ code: 'USER_CODE', name: '张三' })
+    const output = resolve(res) as any
+
+    expect(output).toMatchObject({ code: 'USER_CODE', name: '张三' })
+  })
+
   it('should return axios error with default message when business message is missing', async () => {
     const resError = gRes({ code: 1 })
     const output = resolve(resError) as any

@@ -27,16 +27,20 @@ export function injectBusinessResultParser(
   axios?: AxiosInstance | EAxiosInstance
 ) {
   const parser = (response: EAxiosResponse) => {
-    const { _business } = response
+    const business = response._business || {}
 
     const responseData = response.data
     const config = response.config
 
-    const { code, message, data } = _business || {}
+    const { code, message, data } = business
+    const shouldHandleBusinessResponse =
+      eaConfig.shouldHandleBusinessResponse ||
+      ((_: any, result: typeof business) => result.code !== undefined)
+
     // 处理业务逻辑
-    if (code !== undefined) {
+    if (shouldHandleBusinessResponse(responseData, business, response)) {
       const validCodes = eaConfig.validBusinessCodes || []
-      if (!validCodes.includes(code)) {
+      if (code === undefined || !validCodes.includes(code)) {
         const axiosError = createError(
           message || '业务请求有误，数据解析失败',
           response.config,

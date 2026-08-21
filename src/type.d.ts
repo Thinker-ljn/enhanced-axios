@@ -68,6 +68,12 @@ export interface EAConfig {
   returnBusinessData?: boolean
   /**业务数据与业务代码的别名, 默认是 code message data */
   businessAlias?: EAAlias
+  /**是否按业务响应处理，默认在解析到 code 时处理 */
+  shouldHandleBusinessResponse?: (
+    responseData: any,
+    business: EAxiosBusinessResult,
+    response: EAxiosResponse
+  ) => boolean
   /**用户未认证的业务代码 */
   unauthorizedBusinessCodes?: BusinessCodes
   /**
