@@ -3,11 +3,17 @@ import { createError } from '@/utils/axios-error'
 import { injectAliasInterceptor, parseAliasResult } from '../alias'
 import { createTestConfig } from '../__test-utils__/helpers'
 
-describe('parseAliasResult should return origin value', () => {
+describe('parseAliasResult should normalize non-object value', () => {
   it('when pass not a object value', () => {
-    expect(parseAliasResult(undefined)).toBeUndefined()
-    expect(parseAliasResult(1)).toBe(1)
-    expect(parseAliasResult('result')).toBe('result')
+    const emptyBusinessResult = {
+      code: undefined,
+      message: undefined,
+      data: undefined,
+    }
+
+    expect(parseAliasResult(undefined)).toMatchObject(emptyBusinessResult)
+    expect(parseAliasResult(1)).toMatchObject(emptyBusinessResult)
+    expect(parseAliasResult('result')).toMatchObject(emptyBusinessResult)
   })
 })
 

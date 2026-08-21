@@ -19,7 +19,7 @@ function pickAliasValue(source: any, alias: string | string[]) {
   const keys = Array.isArray(alias) ? alias : [alias]
 
   for (const key of keys) {
-    if (source[key] !== undefined) {
+    if (source?.[key] !== undefined) {
       return source[key]
     }
   }
@@ -32,7 +32,11 @@ export const parseAliasResult = (
   alias: EAAlias = {}
 ): EAxiosBusinessResult => {
   if (!resData || typeof resData !== 'object') {
-    return resData
+    return {
+      code: undefined,
+      message: undefined,
+      data: undefined,
+    }
   }
   const { code, message, data } = { ...defaultAlias, ...alias }
   return {
