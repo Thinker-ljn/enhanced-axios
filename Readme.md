@@ -50,6 +50,7 @@ someServiceApi()
 
 ```ts
 import {
+  EA_BUSINESS_ERROR_CODE,
   enhancedAxios,
   // 用于生成自定义的 401 拦截器
   genIfUnauthorizedInterceptor,
@@ -64,6 +65,9 @@ enhancedAxios(
   {
     // 成功的业务代码
     validBusinessCodes: [200],
+    // 可选：自定义成功业务代码判断，配置后优先于 validBusinessCodes
+    isValidBusinessCode: (code) =>
+      typeof code === 'number' && code >= 200 && code < 300,
     // 用户未认证的业务代码
     unauthorizedBusinessCodes: [10011039, 10011040, 10011041],
     // 业务数据与业务代码的别名, 默认是 code message data
@@ -72,6 +76,9 @@ enhancedAxios(
       message: ['message', 'msg'],
       data: ['result', 'data'],
     },
+    // 可选：决定当前响应是否按业务响应处理，默认解析到 code 时处理
+    shouldHandleBusinessResponse: (responseData) =>
+      responseData && responseData.status !== 'raw',
     // 执行失败信息的函数，一般是UI组件的函数
     warning: (message: string) => notice('danger', message),
     // 执行成功信息的函数，一般是UI组件的函数
@@ -99,6 +106,9 @@ businessService<MyBusinessDataType>({
 }, (error) => {
   // 捕获 http 错误或业务错误
   console.log(error)
+  if (error.code === EA_BUSINESS_ERROR_CODE) {
+    console.log('业务错误')
+  }
   // 打印由插件默认生成的错误信息
   console.log(error._formatMessage())
 })
