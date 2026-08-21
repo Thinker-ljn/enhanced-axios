@@ -1,5 +1,6 @@
 import { AxiosInstance } from 'axios'
 import {
+  BusinessCode,
   EAConfig,
   EAxiosInstance,
   EAxiosRequestConfig,
@@ -40,7 +41,11 @@ export function injectBusinessResultParser(
     // 处理业务逻辑
     if (shouldHandleBusinessResponse(responseData, business, response)) {
       const validCodes = eaConfig.validBusinessCodes || []
-      if (code === undefined || !validCodes.includes(code)) {
+      const isValidBusinessCode =
+        eaConfig.isValidBusinessCode ||
+        ((currentCode: BusinessCode) => validCodes.includes(currentCode))
+
+      if (code === undefined || !isValidBusinessCode(code, business)) {
         const axiosError = createError(
           message || '业务请求有误，数据解析失败',
           response.config,

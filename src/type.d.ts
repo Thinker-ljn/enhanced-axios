@@ -58,6 +58,11 @@ export interface EAExtraInterceptors {
 export interface EAConfig {
   /**成功的业务代码 */
   validBusinessCodes: BusinessCodes
+  /**自定义成功业务代码判断，优先于 validBusinessCodes */
+  isValidBusinessCode?: (
+    code: BusinessCode,
+    business: EAxiosBusinessResult
+  ) => boolean
   /**拦截器 */
   interceptors?: EAExtraInterceptors
   /**中置拦截器 */

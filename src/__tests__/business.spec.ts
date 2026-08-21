@@ -66,6 +66,35 @@ describe('business interceptors parser', () => {
     expect(output).toMatchObject({ a: 'a' })
   })
 
+  it('should return business data when isValidBusinessCode returns true', () => {
+    const { resolve } = injectBusinessResultParser({
+      validBusinessCodes: [],
+      isValidBusinessCode: (code, business) => {
+        expect(business.code).toBe(code)
+        return typeof code === 'number' && code >= 200 && code < 300
+      },
+    })
+    const res = gRes({ code: 204, data: { a: 'a' } })
+    const output = resolve(res) as any
+
+    expect(output).toMatchObject({ a: 'a' })
+  })
+
+  it('should return axios error when isValidBusinessCode returns false', async () => {
+    const { resolve } = injectBusinessResultParser({
+      validBusinessCodes: [500],
+      isValidBusinessCode: () => false,
+    })
+    const resError = gRes({ code: 500, message: 'custom invalid' })
+    const output = resolve(resError) as any
+
+    await output.catch((e: EAxiosError) => {
+      expect(e.isAxiosError).toBe(true)
+      expect(e.code).toBe(EA_BUSINESS_ERROR_CODE)
+      expect(e.message).toBe('custom invalid')
+    })
+  })
+
   it('should skip business parser when shouldHandleBusinessResponse returns false', () => {
     const { resolve } = injectBusinessResultParser({
       validBusinessCodes: [0],
