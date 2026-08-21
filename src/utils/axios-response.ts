@@ -1,22 +1,23 @@
 import { EAxiosResponse } from '@/type'
 import { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { createError } from './axios-error'
+import { createError, normalizeConfig } from './axios-error'
 const HTTP_UNAUTHORIZED_CODE = 401
 export function createUnauthorizationError(
-  config: AxiosRequestConfig,
+  config: AxiosRequestConfig = {},
   request: XMLHttpRequest | undefined = undefined,
   message: string = '当前用户未认证'
 ) {
+  const finalConfig = normalizeConfig(config)
   const response: AxiosResponse = {
     data: null,
     status: HTTP_UNAUTHORIZED_CODE,
     statusText: '',
     headers: {},
-    config,
+    config: finalConfig,
     request,
   }
 
-  return createError(message, config, undefined, undefined, response)
+  return createError(message, finalConfig, undefined, undefined, response)
 }
 
 /**

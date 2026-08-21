@@ -1,6 +1,11 @@
 import { parseAliasResult } from '@/alias'
-import { injectBusinessResultParser, parseFeedback } from '@/business'
+import {
+  EA_BUSINESS_ERROR_CODE,
+  injectBusinessResultParser,
+  parseFeedback,
+} from '@/business'
 import { EAxiosError, EAxiosResponse } from '@/type'
+import { createTestConfig } from '../__test-utils__/helpers'
 
 describe('business interceptors parseFeedback', () => {
   it('should use apiMsg when feedbackMsg is empty', () => {
@@ -33,7 +38,7 @@ describe('business interceptors parser', () => {
     status: 200,
     statusText: '',
     headers: {},
-    config: {},
+    config: createTestConfig(),
     _business: parseAliasResult(data),
   })
 
@@ -43,6 +48,7 @@ describe('business interceptors parser', () => {
 
     await output.catch((e: EAxiosError) => {
       expect(e.isAxiosError).toBe(true)
+      expect(e.code).toBe(EA_BUSINESS_ERROR_CODE)
       expect(e.message).toBe('error')
     })
   })
@@ -52,6 +58,67 @@ describe('business interceptors parser', () => {
     const output = resolve(res) as any
     expect(output).toMatchObject({ a: 'a' })
     expect(success).toHaveBeenCalled()
+  })
+
+  it('should return business data when message is missing', () => {
+    const res = gRes({ code: 0, data: { a: 'a' } })
+    const output = resolve(res) as any
+    expect(output).toMatchObject({ a: 'a' })
+  })
+
+  it('should return business data when isValidBusinessCode returns true', () => {
+    const { resolve } = injectBusinessResultParser({
+      validBusinessCodes: [],
+      isValidBusinessCode: (code, business) => {
+        expect(business.code).toBe(code)
+        return typeof code === 'number' && code >= 200 && code < 300
+      },
+    })
+    const res = gRes({ code: 204, data: { a: 'a' } })
+    const output = resolve(res) as any
+
+    expect(output).toMatchObject({ a: 'a' })
+  })
+
+  it('should return axios error when isValidBusinessCode returns false', async () => {
+    const { resolve } = injectBusinessResultParser({
+      validBusinessCodes: [500],
+      isValidBusinessCode: () => false,
+    })
+    const resError = gRes({ code: 500, message: 'custom invalid' })
+    const output = resolve(resError) as any
+
+    await output.catch((e: EAxiosError) => {
+      expect(e.isAxiosError).toBe(true)
+      expect(e.code).toBe(EA_BUSINESS_ERROR_CODE)
+      expect(e.message).toBe('custom invalid')
+    })
+  })
+
+  it('should skip business parser when shouldHandleBusinessResponse returns false', () => {
+    const { resolve } = injectBusinessResultParser({
+      validBusinessCodes: [0],
+      shouldHandleBusinessResponse: (responseData, business, response) => {
+        expect(responseData).toMatchObject({ code: 'USER_CODE' })
+        expect(business.code).toBe('USER_CODE')
+        expect(response.data).toBe(responseData)
+        return false
+      },
+    })
+    const res = gRes({ code: 'USER_CODE', name: '张三' })
+    const output = resolve(res) as any
+
+    expect(output).toMatchObject({ code: 'USER_CODE', name: '张三' })
+  })
+
+  it('should return axios error with default message when business message is missing', async () => {
+    const resError = gRes({ code: 1 })
+    const output = resolve(resError) as any
+
+    await output.catch((e: EAxiosError) => {
+      expect(e.isAxiosError).toBe(true)
+      expect(e.message).toBe('业务请求有误，数据解析失败')
+    })
   })
 
   it('should return business data', () => {

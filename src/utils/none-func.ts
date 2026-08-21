@@ -1,4 +1,4 @@
-import { EAxiosError, EAxiosRequestConfig } from '@/type'
+import { EAxiosError } from '@/type'
 
-export const noneResolve = (config: EAxiosRequestConfig) => config
+export const noneResolve = <T>(value: T): T => value
 export const noneReject = (error: EAxiosError) => error

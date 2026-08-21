@@ -4,38 +4,65 @@ import {
   AxiosResponse,
   AxiosDefaults,
   AxiosInterceptorManager,
+  InternalAxiosRequestConfig,
 } from 'axios'
 
 export type BusinessCode = string | number
 export type BusinessCodes = BusinessCode[]
+export type EAAliasKey = string | string[]
 
-interface InterceptorResolveHandler {
-  (config: EAxiosRequestConfig):
-    | EAxiosRequestConfig
-    | Promise<EAxiosRequestConfig>
+export interface EAxiosInternalRequestConfig<D = any>
+  extends InternalAxiosRequestConfig<D> {
+  /**
+   * 是否在成功时弹出接口返回的 message （可传字符串，覆盖接口返回的信息），需要注册 success 函数
+   * 可传入一个字符串元组，表示可选，如果接口无返回则使用，如：{ _feedback: ['这是备用的成功信息'] }
+   */
+  _feedback?: boolean | string | [string]
+  /**
+   * 禁止弹出接口返回的 message 及配置的 _feedback
+   */
+  _silent?: boolean
+}
+
+interface RequestInterceptorResolveHandler {
+  (config: EAxiosInternalRequestConfig):
+    | EAxiosInternalRequestConfig
+    | Promise<EAxiosInternalRequestConfig>
 }
 interface InterceptorRejectHandler {
   (error: EAxiosError): any | Promise<never>
 }
-type InterceptorHandlers = Array<
-  | [InterceptorResolveHandler | undefined, InterceptorRejectHandler]
-  | [InterceptorResolveHandler]
+interface ResponseInterceptorResolveHandler {
+  (response: EAxiosResponse): any | Promise<any>
+}
+type RequestInterceptorHandlers = Array<
+  | [RequestInterceptorResolveHandler | undefined, InterceptorRejectHandler]
+  | [RequestInterceptorResolveHandler]
+>
+type ResponseInterceptorHandlers = Array<
+  | [ResponseInterceptorResolveHandler | undefined, InterceptorRejectHandler]
+  | [ResponseInterceptorResolveHandler]
 >
 
 export interface EAAlias {
-  code?: string
-  message?: string
-  data?: string
+  code?: EAAliasKey
+  message?: EAAliasKey
+  data?: EAAliasKey
 }
 
 export interface EAExtraInterceptors {
-  request: InterceptorHandlers
-  response: InterceptorHandlers
+  request?: RequestInterceptorHandlers
+  response?: ResponseInterceptorHandlers
 }
 
 export interface EAConfig {
   /**成功的业务代码 */
   validBusinessCodes: BusinessCodes
+  /**自定义成功业务代码判断，优先于 validBusinessCodes */
+  isValidBusinessCode?: (
+    code: BusinessCode,
+    business: EAxiosBusinessResult
+  ) => boolean
   /**拦截器 */
   interceptors?: EAExtraInterceptors
   /**中置拦截器 */
@@ -46,7 +73,18 @@ export interface EAConfig {
   returnBusinessData?: boolean
   /**业务数据与业务代码的别名, 默认是 code message data */
   businessAlias?: EAAlias
+  /**是否按业务响应处理，默认在解析到 code 时处理 */
+  shouldHandleBusinessResponse?: (
+    responseData: any,
+    business: EAxiosBusinessResult,
+    response: EAxiosResponse
+  ) => boolean
   /**用户未认证的业务代码 */
+  unauthorizedBusinessCodes?: BusinessCodes
+  /**
+   * 用户未认证的业务代码，保留用于兼容旧拼写
+   * @deprecated 请使用 unauthorizedBusinessCodes
+   */
   unanthorizedBusinessCodes?: BusinessCodes
   /**执行成功信息的函数，一般是UI组件的函数 */
   success?: (msg: string) => any
@@ -68,18 +106,22 @@ export interface EAxiosRequestConfig<D = any> extends AxiosRequestConfig<D> {
 }
 
 export interface EAxiosBusinessResult {
-  code: number | string
-  message: string
-  data: any
+  code?: number | string
+  message?: string
+  data?: any
 }
 
-export type EAxiosResponse = AxiosResponse & {
-  config?: EAxiosRequestConfig
+export type EAxiosResponse<T = any, D = any> = Omit<
+  AxiosResponse<T, D>,
+  'config'
+> & {
+  config: EAxiosInternalRequestConfig<D>
   /**由原响应数据经 EAConfig['businessAlias'] 转换的业务数据 */
   _business?: EAxiosBusinessResult
 }
 
 export type EAxiosError = AxiosError & {
+  config?: EAxiosInternalRequestConfig
   response?: EAxiosResponse
   /**可输出由原响应错误转换的默认报错信息 */
   _formatMessage?: () => string
@@ -90,40 +132,40 @@ export class EAxios {
   constructor(config?: EAxiosRequestConfig)
   defaults: AxiosDefaults
   interceptors: {
-    request: AxiosInterceptorManager<EAxiosRequestConfig>
+    request: AxiosInterceptorManager<EAxiosInternalRequestConfig>
     response: AxiosInterceptorManager<AxiosResponse>
   }
   getUri(config?: EAxiosRequestConfig): string
-  request<T = any, R = AxiosResponse<T>, D = any>(
+  request<T = any, R = T, D = any>(
     config: EAxiosRequestConfig<D>
   ): Promise<R>
-  get<T = any, R = AxiosResponse<T>, D = any>(
+  get<T = any, R = T, D = any>(
     url: string,
     config?: EAxiosRequestConfig<D>
   ): Promise<R>
-  delete<T = any, R = AxiosResponse<T>, D = any>(
+  delete<T = any, R = T, D = any>(
     url: string,
     config?: EAxiosRequestConfig<D>
   ): Promise<R>
-  head<T = any, R = AxiosResponse<T>, D = any>(
+  head<T = any, R = T, D = any>(
     url: string,
     config?: EAxiosRequestConfig<D>
   ): Promise<R>
-  options<T = any, R = AxiosResponse<T>, D = any>(
+  options<T = any, R = T, D = any>(
     url: string,
     config?: EAxiosRequestConfig<D>
   ): Promise<R>
-  post<T = any, R = AxiosResponse<T>, D = any>(
-    url: string,
-    data?: D,
-    config?: EAxiosRequestConfig<D>
-  ): Promise<R>
-  put<T = any, R = AxiosResponse<T>, D = any>(
+  post<T = any, R = T, D = any>(
     url: string,
     data?: D,
     config?: EAxiosRequestConfig<D>
   ): Promise<R>
-  patch<T = any, R = AxiosResponse<T>, D = any>(
+  put<T = any, R = T, D = any>(
+    url: string,
+    data?: D,
+    config?: EAxiosRequestConfig<D>
+  ): Promise<R>
+  patch<T = any, R = T, D = any>(
     url: string,
     data?: D,
     config?: EAxiosRequestConfig<D>

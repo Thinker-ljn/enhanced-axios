@@ -1,12 +1,19 @@
 import { EAxiosResponse } from '@/type'
 import { createError } from '@/utils/axios-error'
 import { injectAliasInterceptor, parseAliasResult } from '../alias'
+import { createTestConfig } from '../__test-utils__/helpers'
 
-describe('parseAliasResult should return origin value', () => {
+describe('parseAliasResult should normalize non-object value', () => {
   it('when pass not a object value', () => {
-    expect(parseAliasResult(undefined)).toBeUndefined()
-    expect(parseAliasResult(1)).toBe(1)
-    expect(parseAliasResult('result')).toBe('result')
+    const emptyBusinessResult = {
+      code: undefined,
+      message: undefined,
+      data: undefined,
+    }
+
+    expect(parseAliasResult(undefined)).toMatchObject(emptyBusinessResult)
+    expect(parseAliasResult(1)).toMatchObject(emptyBusinessResult)
+    expect(parseAliasResult('result')).toMatchObject(emptyBusinessResult)
   })
 })
 
@@ -45,6 +52,40 @@ describe('parseAliasResult should return business value', () => {
       data: {},
     })
   })
+
+  it('should pick first defined fallback alias value', () => {
+    expect(
+      parseAliasResult(
+        {
+          code: 0,
+          msg: 'success',
+          data: ['fallback data'],
+        },
+        { message: ['message', 'msg'], data: ['result', 'data'] }
+      )
+    ).toMatchObject({
+      code: 0,
+      message: 'success',
+      data: ['fallback data'],
+    })
+
+    expect(
+      parseAliasResult(
+        {
+          code: 0,
+          message: 'success',
+          msg: 'fallback message',
+          result: ['result data'],
+          data: ['fallback data'],
+        },
+        { message: ['message', 'msg'], data: ['result', 'data'] }
+      )
+    ).toMatchObject({
+      code: 0,
+      message: 'success',
+      data: ['result data'],
+    })
+  })
 })
 
 describe('alias interceptors', () => {
@@ -53,7 +94,7 @@ describe('alias interceptors', () => {
     status: 400,
     statusText: '',
     headers: {},
-    config: {},
+    config: createTestConfig(),
   })
 
   const gErr = (msg: string, data: any = null) => {
@@ -79,6 +120,11 @@ describe('alias interceptors', () => {
 
     await reject(gErr('', { message: 'abcde', code: 123 })).catch((e) => {
       expect(e._formatCodeMessage()).toBe('[123]: abcde')
+      expect(e._formatMessage()).toBe('abcde')
+    })
+
+    await reject(gErr('', { message: 'abcde', code: 0 })).catch((e) => {
+      expect(e._formatCodeMessage()).toBe('[0]: abcde')
       expect(e._formatMessage()).toBe('abcde')
     })
   })

@@ -3,9 +3,10 @@ import {
   EAConfig,
   EAxiosBusinessResult,
   EAxiosError,
+  EAxiosInstance,
   EAxiosResponse,
 } from '@/type'
-import { Axios } from 'axios'
+import { AxiosInstance } from 'axios'
 import { addFormatMessage } from './utils/axios-error'
 
 export const defaultAlias = {
@@ -14,35 +15,50 @@ export const defaultAlias = {
   data: 'data',
 }
 
+function pickAliasValue(source: any, alias: string | string[]) {
+  const keys = Array.isArray(alias) ? alias : [alias]
+
+  for (const key of keys) {
+    if (source?.[key] !== undefined) {
+      return source[key]
+    }
+  }
+
+  return undefined
+}
+
 export const parseAliasResult = (
   resData: any,
   alias: EAAlias = {}
 ): EAxiosBusinessResult => {
   if (!resData || typeof resData !== 'object') {
-    return resData
+    return {
+      code: undefined,
+      message: undefined,
+      data: undefined,
+    }
   }
   const { code, message, data } = { ...defaultAlias, ...alias }
   return {
-    code: resData[code],
-    message: resData[message],
-    data: resData[data],
+    code: pickAliasValue(resData, code),
+    message: pickAliasValue(resData, message),
+    data: pickAliasValue(resData, data),
   }
 }
 
-export const injectAliasInterceptor = (eaConfig: EAConfig, axios?: Axios) => {
-  const resolve = (response?: EAxiosResponse) => {
-    if (response) {
-      response._business = parseAliasResult(
-        response.data,
-        eaConfig.businessAlias
-      )
-    }
-
+export const injectAliasInterceptor = (
+  eaConfig: EAConfig,
+  axios?: AxiosInstance | EAxiosInstance
+) => {
+  const resolve = (response: EAxiosResponse) => {
+    response._business = parseAliasResult(response.data, eaConfig.businessAlias)
     return response
   }
 
   const reject = (error: EAxiosError) => {
-    error.response = resolve(error.response)
+    if (error.response) {
+      error.response = resolve(error.response)
+    }
     addFormatMessage(error)
     return Promise.reject(error)
   }

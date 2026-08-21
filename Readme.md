@@ -46,8 +46,11 @@ someServiceApi()
 
 ## 使用
 
+> 2.x 版本要求项目中安装 `axios@^1.0.0`。如果仍在使用 axios 0.x，请继续使用 enhanced-axios 1.x。
+
 ```ts
 import {
+  EA_BUSINESS_ERROR_CODE,
   enhancedAxios,
   // 用于生成自定义的 401 拦截器
   genIfUnauthorizedInterceptor,
@@ -62,10 +65,20 @@ enhancedAxios(
   {
     // 成功的业务代码
     validBusinessCodes: [200],
+    // 可选：自定义成功业务代码判断，配置后优先于 validBusinessCodes
+    isValidBusinessCode: (code) =>
+      typeof code === 'number' && code >= 200 && code < 300,
     // 用户未认证的业务代码
-    unanthorizedBusinessCodes: [10011039, 10011040, 10011041],
+    unauthorizedBusinessCodes: [10011039, 10011040, 10011041],
     // 业务数据与业务代码的别名, 默认是 code message data
-    businessAlias: { data: 'result' },
+    // 可传入数组按顺序兼容多个后端字段，例如 message/msg、result/data
+    businessAlias: {
+      message: ['message', 'msg'],
+      data: ['result', 'data'],
+    },
+    // 可选：决定当前响应是否按业务响应处理，默认解析到 code 时处理
+    shouldHandleBusinessResponse: (responseData) =>
+      responseData && responseData.status !== 'raw',
     // 执行失败信息的函数，一般是UI组件的函数
     warning: (message: string) => notice('danger', message),
     // 执行成功信息的函数，一般是UI组件的函数
@@ -93,12 +106,18 @@ businessService<MyBusinessDataType>({
 }, (error) => {
   // 捕获 http 错误或业务错误
   console.log(error)
+  if (error.code === EA_BUSINESS_ERROR_CODE) {
+    console.log('业务错误')
+  }
   // 打印由插件默认生成的错误信息
   console.log(error._formatMessage())
 })
 
-// 如果你的某些请求，想要原始的响应对象，那么创建多一个 axios 实例来请求即可
-const originService = axios.create({}) // AxiosInstance
+// 推荐拆分两个实例：
+// request 用 enhanced-axios 处理业务响应，默认直接返回业务数据；
+// rawRequest 保留原始 axios 行为，用于需要完整 AxiosResponse 的请求。
+export const request = businessService
+export const rawRequest = axios.create({})
 
 ```
 

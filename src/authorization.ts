@@ -1,9 +1,10 @@
-import { Axios, AxiosRequestConfig } from 'axios'
+import { AxiosInstance, AxiosRequestConfig } from 'axios'
 import {
   EAxiosBusinessResult,
   EAxiosResponse,
   EAxiosError,
   EAConfig,
+  EAxiosInstance,
 } from './type'
 import {
   createUnauthorizationError,
@@ -11,16 +12,26 @@ import {
 } from './utils/axios-response'
 import { noneResolve } from './utils/none-func'
 
-export function injectAuthorizationCheck(eaConfig: EAConfig, axios?: Axios) {
+export function injectAuthorizationCheck(
+  eaConfig: EAConfig,
+  axios?: AxiosInstance | EAxiosInstance
+) {
+  const unauthorizedCodes =
+    eaConfig.unauthorizedBusinessCodes ??
+    eaConfig.unanthorizedBusinessCodes ??
+    []
   const invalidCode = (business?: EAxiosBusinessResult) =>
-    business &&
-    (eaConfig.unanthorizedBusinessCodes || []).includes(business.code)
+    business?.code !== undefined && unauthorizedCodes.includes(business.code)
 
   const resolve = (res: EAxiosResponse) => {
     const { _business } = res
     if (invalidCode(_business)) {
       return Promise.reject(
-        createUnauthorizationError(res.config, undefined, _business?.message)
+        createUnauthorizationError(
+          res.config || {},
+          undefined,
+          _business?.message
+        )
       )
     }
     return res
@@ -35,7 +46,7 @@ export function injectAuthorizationCheck(eaConfig: EAConfig, axios?: Axios) {
     // 业务代码判断为未认证，则包装一个 401 响应
     return Promise.reject(
       createUnauthorizationError(
-        error.config,
+        error.config || {},
         undefined,
         _business?.message || error.message
       )
@@ -53,11 +64,11 @@ export function injectAuthorizationCheck(eaConfig: EAConfig, axios?: Axios) {
 }
 
 export function genIfUnauthorizedInterceptor(
-  callback: (config: AxiosRequestConfig, e: EAxiosError) => Promise<any>
+  callback: (config: AxiosRequestConfig, e: EAxiosError) => any | Promise<any>
 ) {
   return function ifUnauthorizedInterceptor(e: EAxiosError) {
     if (isUnauthorizedResponse(e.response)) {
-      return callback(e.config, e)
+      return callback(e.config || {}, e)
     }
     return Promise.reject(e)
   }

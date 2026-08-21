@@ -1,3 +1,60 @@
+# [2.0.0](https://github.com/Thinker-ljn/enhanced-axios/compare/v2.0.0-rc.3...v2.0.0) (2026-08-21)
+
+
+
+# [2.0.0-rc.3](https://github.com/Thinker-ljn/enhanced-axios/compare/v2.0.0-rc.2...v2.0.0-rc.3) (2026-08-21)
+
+
+### Bug Fixes
+
+* **alias:** normalize non-object alias results ([70b4594](https://github.com/Thinker-ljn/enhanced-axios/commit/70b4594702139d7f0294410fac7315376fcbe2f2))
+* **auth:** allow sync unauthorized callback ([2ce88a3](https://github.com/Thinker-ljn/enhanced-axios/commit/2ce88a3cdbbc0d0e381a4b4ee8fbf7b760177fd4))
+* **types:** allow partial business result fields ([2fcbe8d](https://github.com/Thinker-ljn/enhanced-axios/commit/2fcbe8d77f68a0c38403b9a8dcfc078d401e900c))
+
+
+### Features
+
+* **business:** support custom response predicate ([a390252](https://github.com/Thinker-ljn/enhanced-axios/commit/a390252df4d08db0478d3cb91f06d5f446a59f3b))
+* **business:** support custom valid code predicate ([bedd78f](https://github.com/Thinker-ljn/enhanced-axios/commit/bedd78fc8edf0a4b38ebc758f5eac0e7013dba9e))
+* **error:** export business error code constant ([01c8446](https://github.com/Thinker-ljn/enhanced-axios/commit/01c84463d9e372a8757c00d488c7ed08daf8bbe8))
+
+
+
+# [2.0.0-rc.2](https://github.com/Thinker-ljn/enhanced-axios/compare/v2.0.0-rc.1...v2.0.0-rc.2) (2026-08-20)
+
+
+### Bug Fixes
+
+* align enhanced instance method return types ([f05817c](https://github.com/Thinker-ljn/enhanced-axios/commit/f05817c84e403d7e1c7a6d85049efd83db22812a))
+* make extra interceptor groups optional ([a94224a](https://github.com/Thinker-ljn/enhanced-axios/commit/a94224a860df7a924eb97e34f233f84d88bf2233))
+* preserve falsy business code in formatted errors ([d94d5c1](https://github.com/Thinker-ljn/enhanced-axios/commit/d94d5c1db76ba70ceb2217a1d6349dc2260ca680))
+
+
+### Features
+
+* add unauthorizedBusinessCodes option ([9e7b09b](https://github.com/Thinker-ljn/enhanced-axios/commit/9e7b09bdbb4394fd795a49d2dc0d2ca878f4d2f9))
+* parse business responses by code presence ([1001c1e](https://github.com/Thinker-ljn/enhanced-axios/commit/1001c1eda24bdabff1d945600eed6657b14b66be))
+* support fallback business aliases ([a8e62eb](https://github.com/Thinker-ljn/enhanced-axios/commit/a8e62eba2b038a11fb50c06fcf1087866d4e8a71))
+
+
+
+# [2.0.0-rc.1](https://github.com/Thinker-ljn/enhanced-axios/compare/v1.2.1...v2.0.0-rc.1) (2026-07-17)
+
+
+* feat!: upgrade axios to v1 ([c5ff827](https://github.com/Thinker-ljn/enhanced-axios/commit/c5ff8277589f1560659afa9815de5df4d47cc4ff))
+
+
+### BREAKING CHANGES
+
+* require axios ^1.0.0 and drop axios 0.x support.
+
+  - add axios as a peer dependency
+  - update development dependency to axios ^1.18.1
+  - adapt interceptor and error types for Axios 1.x
+  - externalize axios from build outputs
+
+
+
 ## [1.2.1](https://github.com/Thinker-ljn/enhanced-axios/compare/v1.2.0...v1.2.1) (2023-09-18)
 
 

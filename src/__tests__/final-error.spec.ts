@@ -24,10 +24,16 @@ describe('final error interceptors', () => {
 
   it('should warning timeout', (done) => {
     const err = createError('timeout', {}, 'ECONNABORTED')
+    expect(err.config?.headers).toBeDefined()
     reject(err).catch(() => {
       expect(warning).toHaveBeenCalledWith('请求超时，请稍后再试。')
       done()
     })
+  })
+
+  it('should create axios error with default config', () => {
+    const err = createError('error')
+    expect(err.config?.headers).toBeDefined()
   })
 
   it('should warning error', (done) => {

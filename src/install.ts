@@ -1,26 +1,24 @@
-import { Axios, AxiosInstance } from 'axios'
+import { AxiosInstance } from 'axios'
 import { injectAliasInterceptor } from './alias'
 import { injectAuthorizationCheck } from './authorization'
 import { injectBusinessResultParser } from './business'
 import { injectFinalErrorHandler } from './final-error'
 import { EAConfig, EAExtraInterceptors, EAxiosInstance } from './type'
-import { getKeys } from './utils/keyof'
 import { noneReject, noneResolve } from './utils/none-func'
 
-const enhancedAxios = <T extends Axios | AxiosInstance | EAxiosInstance>(
+const enhancedAxios = <T extends AxiosInstance | EAxiosInstance>(
   axios: T,
   config: EAConfig
 ): T => {
   function runInterceptors(interceptors: EAExtraInterceptors) {
-    const keys = getKeys(interceptors)
-    keys.forEach((key) => {
-      const innerInterceptors = interceptors[key]
-      if (innerInterceptors.length && ['request', 'response'].includes(key)) {
-        innerInterceptors.forEach((icpts) => {
-          const [resolve = noneResolve, reject = noneReject] = icpts || []
-          axios.interceptors[key].use(resolve, reject)
-        })
-      }
+    interceptors.request?.forEach((icpts) => {
+      const [resolve = noneResolve, reject = noneReject] = icpts || []
+      axios.interceptors.request.use(resolve, reject)
+    })
+
+    interceptors.response?.forEach((icpts) => {
+      const [resolve = noneResolve, reject = noneReject] = icpts || []
+      axios.interceptors.response.use(resolve, reject)
     })
   }
   if (config.frontInterceptors) {
