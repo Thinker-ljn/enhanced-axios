@@ -1,3 +1,21 @@
+# [2.0.0-rc.3](https://github.com/Thinker-ljn/enhanced-axios/compare/v2.0.0-rc.2...v2.0.0-rc.3) (2026-08-21)
+
+
+### Bug Fixes
+
+* **alias:** normalize non-object alias results ([70b4594](https://github.com/Thinker-ljn/enhanced-axios/commit/70b4594702139d7f0294410fac7315376fcbe2f2))
+* **auth:** allow sync unauthorized callback ([2ce88a3](https://github.com/Thinker-ljn/enhanced-axios/commit/2ce88a3cdbbc0d0e381a4b4ee8fbf7b760177fd4))
+* **types:** allow partial business result fields ([2fcbe8d](https://github.com/Thinker-ljn/enhanced-axios/commit/2fcbe8d77f68a0c38403b9a8dcfc078d401e900c))
+
+
+### Features
+
+* **business:** support custom response predicate ([a390252](https://github.com/Thinker-ljn/enhanced-axios/commit/a390252df4d08db0478d3cb91f06d5f446a59f3b))
+* **business:** support custom valid code predicate ([bedd78f](https://github.com/Thinker-ljn/enhanced-axios/commit/bedd78fc8edf0a4b38ebc758f5eac0e7013dba9e))
+* **error:** export business error code constant ([01c8446](https://github.com/Thinker-ljn/enhanced-axios/commit/01c84463d9e372a8757c00d488c7ed08daf8bbe8))
+
+
+
 # [2.0.0-rc.2](https://github.com/Thinker-ljn/enhanced-axios/compare/v2.0.0-rc.1...v2.0.0-rc.2) (2026-08-20)
 
 
