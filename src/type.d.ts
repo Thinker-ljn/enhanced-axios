@@ -95,9 +95,9 @@ export interface EAxiosRequestConfig<D = any> extends AxiosRequestConfig<D> {
 }
 
 export interface EAxiosBusinessResult {
-  code: number | string
-  message: string
-  data: any
+  code?: number | string
+  message?: string
+  data?: any
 }
 
 export type EAxiosResponse<T = any, D = any> = Omit<

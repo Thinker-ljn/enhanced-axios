@@ -1,5 +1,9 @@
 import axios from 'axios'
-import type { EAxiosInstance, EAxiosRequestConfig } from '@/type'
+import type {
+  EAxiosBusinessResult,
+  EAxiosInstance,
+  EAxiosRequestConfig,
+} from '@/type'
 
 interface MyData {
   id: string
@@ -24,11 +28,23 @@ function assertEnhancedInstanceTypes(service: EAxiosInstance) {
   void callableConfigResult
 }
 
+function assertBusinessResultTypes() {
+  const withoutMessage: EAxiosBusinessResult = {
+    code: 0,
+    data: { id: '1' },
+  }
+  const emptyResult: EAxiosBusinessResult = {}
+
+  void withoutMessage
+  void emptyResult
+}
+
 describe('enhanced axios instance types', () => {
   it('should type enhanced methods as business data by default', () => {
     const service = axios.create() as EAxiosInstance
 
     expect(assertEnhancedInstanceTypes).toBeDefined()
+    expect(assertBusinessResultTypes).toBeDefined()
     expect(typeof service.get).toBe('function')
   })
 })
